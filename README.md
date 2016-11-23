@@ -22,12 +22,12 @@ hdfs dfs -put ~/Desktop/output/output.txt InputFile
 4. After this you are ready to run the job. This is the command 
 hadoop jar ~/Downloads/sort-map-reduce-master/mapreduce-sort-example/target/mapreduce-sort-example-0.0.1-SNAPSHOT-jar-with-dependencies.jar /inputFile /outputFile
 
-# Note 1 : smallOutputFile shouldn't be a file which is already in the directory. Your job wouldn't run if you'll do so, so just name a file which is not already created. 
+Note 1 : smallOutputFile shouldn't be a file which is already in the directory. Your job wouldn't run if you'll do so, so just name a file which is not already created. 
 
-# Note 2 : If you'll get an error related to META-INF/LICENSE just run this command, probably the write permissions are creating problem.
+Note 2 : If you'll get an error related to META-INF/LICENSE just run this command, probably the write permissions are creating problem then run below command
 zip -d ~/Downloads/sort-map-reduce-master/mapreduce-sort-example/target/mapreduce-sort-example-0.0.1-SNAPSHOT-jar-with-dependencies.jar META-INF/LICENSE
 
-# Note 3 : If you'll receive any errors related to safemode run this command
+Note 3 : If you'll receive any errors related to safemode run this command
 hdfs dfsadmin -safemode leave
 
 5. You'll find the output file here
