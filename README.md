@@ -30,5 +30,7 @@ zip -d ~/Downloads/sort-map-reduce-master/mapreduce-sort-example/target/mapreduc
 Note 3 : If you'll receive any errors related to safemode run this command
 hdfs dfsadmin -safemode leave
 
-5. You'll find the output file here
+5. You'll find the output file here:
 hdfs dfs -cat outputFile/part-r-00000 | less
+
+# Data validation steps
