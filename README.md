@@ -16,8 +16,8 @@ mvn assembly:assembly
 https://amodernstory.com/2014/09/23/installing-hadoop-on-mac-osx-yosemite/
 
 3. once you have hadoop run the below commands to create InputFile folder 
-hdfs dfs -mkdir InputFile
-hdfs dfs -put ~/Desktop/output/output.txt InputFile
+hdfs dfs -mkdir inputFile
+hdfs dfs -put ~/Desktop/output/output.txt inputFile
 
 4. After this you are ready to run the job. This is the command 
 hadoop jar ~/Downloads/sort-map-reduce-master/mapreduce-sort-example/target/mapreduce-sort-example-0.0.1-SNAPSHOT-jar-with-dependencies.jar /inputFile /outputFile
