@@ -1,4 +1,11 @@
-package org.hadoop.mapreduce.mapreduce_sort_example;
+package org.hadoop.sorting;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -11,10 +18,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Created by nsonmez
@@ -25,8 +28,6 @@ import java.util.*;
  * like this: ...
  */
 public class Sort {
-	private static final Logger logger = LoggerFactory.getLogger(Sort.class.getName());
-
 	public static void main(String[] args) throws Exception {
 		Configuration conf = new Configuration();
 		String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
@@ -35,42 +36,31 @@ public class Sort {
 			System.exit(2);
 		}
 		Job job = Job.getInstance(conf);
-		//JobConf jobConf = new JobConf();
-		//Job job = new Job(jobConf);
 		job.setJobName("Sort");
 		job.setJarByClass(Sort.class);
-		/*Even though I wrote the mapper and reducer, I'm using  Mapper.class & Reducer.class because in the suffle and sort part where the mappings from the mapper goes to the reducers, things are already sorted.
-		 * job.setMapperClass(SortMapper.class);        
-		 * job.setReducerClass(SortReducer.class);	
-		*/
-		job.setMapperClass(Mapper.class);        
-		job.setReducerClass(Reducer.class);	
-	    job.setInputFormatClass(KeyValueTextInputFormat.class);
-	    //job.setOutputFormat(KeyValueTextOutputFormat.class);
+		/*
+		 * Even though I wrote the mapper and reducer, I'm using Mapper.class &
+		 * Reducer.class because in the suffle and sort part where the mappings
+		 * from the mapper goes to the reducers, things are already sorted.
+		 * job.setMapperClass(SortMapper.class);
+		 * job.setReducerClass(SortReducer.class);
+		 */
+		job.setMapperClass(Mapper.class);
+		job.setReducerClass(Reducer.class);
+		job.setInputFormatClass(KeyValueTextInputFormat.class);
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Text.class);
 		FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
 		FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
-
-		//FileInputFormat.addInputPaths(job, otherArgs[0]);
-	    //FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
 		System.exit(job.waitForCompletion(true) ? 0 : 1);
 	}
 
 	public static class SortMapper extends Mapper<Object, Text, Text, Text> {
-
-		@SuppressWarnings("unchecked")
 		private Map<Text, List<Text>> sortedMap = new HashMap<>();
 
 		@Override
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-
 			String values = value.toString();
-			// // in case the data we receive is corrupted
-			// if (values.length() != 6) {
-			// return;
-			// }
-
 			String character = values.substring(0, 1);
 			Text firstCharacter = new Text(character);
 
@@ -81,17 +71,13 @@ public class Sort {
 				sortedMap.put(firstCharacter, newCharacterTreeSet);
 			}
 			sortedMap.get(firstCharacter).add(value);
-
 		}
 
 		@Override
 		protected void cleanup(Context context) throws IOException, InterruptedException {
-
 			for (Text firstCharacter : sortedMap.keySet()) {
-
 				List<Text> sortedIterator = sortedMap.get(firstCharacter);
 				Collections.sort(sortedIterator);
-
 				for (Text sortedText : sortedIterator) {
 					context.write(firstCharacter, sortedText);
 				}
@@ -100,13 +86,10 @@ public class Sort {
 	}
 
 	public static class SortReducer extends Reducer<Text, Text, Text, Text> {
-
 		MultipleOutputs mos = null;
-
 		private Map<Text, List<Text>> sortedMapReducer = new HashMap<>();
 
 		public void reduce(Text key, Text sortedValues, Context context) throws IOException, InterruptedException {
-
 			if (sortedMapReducer.containsKey(key)) {
 				List<Text> existingKey = sortedMapReducer.get(key);
 				existingKey.add(sortedValues);
@@ -120,15 +103,12 @@ public class Sort {
 
 		@Override
 		protected void cleanup(Context context) throws IOException, InterruptedException {
-
 			for (Text lastIteration : sortedMapReducer.keySet()) {
-
 				List<Text> sortedvalues = sortedMapReducer.get(lastIteration);
 				Collections.sort(sortedvalues);
 				for (Text sortedText : sortedvalues) {
 					context.write(sortedText, lastIteration);
 				}
-
 			}
 		}
 	}
