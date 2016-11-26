@@ -10,9 +10,10 @@ https://amodernstory.com/2014/09/23/installing-hadoop-on-mac-osx-yosemite/
 
 2. run.sh should be followed by a number indicating the amount of data in GBs you want to generate.
 
-3. As shown in the above , I am running the run.sh script with parameter as 5 to generate 5GB file.
+3. As shown below , I am running the run.sh script with parameter as 5 to generate 5GB file.
 
-4. From the root of the project go "sort-map-reduce-master" folder, run below commands.
+
+From the root of the project go "sort-map-reduce-master" folder, run below commands.
 
 ```bash
 cd mapreduce-sort-example
