@@ -4,21 +4,20 @@ https://amodernstory.com/2014/09/23/installing-hadoop-on-mac-osx-yosemite/
 
 2. Once you have made sure hadoop in installed and running. Follow below steps to run the entire project of generate, sort and validate in one go.
 
-# NOTE : 
+#### NOTE : 
 
-Only caveat to running the below script is to generate,sort and validate on 10GB data, you need to have atleast 80-100GB free space in your laptop. If you donot have that run the below script to generate less amount of data.
+1. Only caveat to running the below script is to generate,sort and validate on 10GB data, you need to have atleast 80-100GB free space in your laptop. If you donot have that run the below script to generate less amount of data.
 
-From the root of the project go "sort-map-reduce-master" folder, run below commands.
+2. run.sh should be followed by a number indicating the amount of data in GBs you want to generate.
+
+3. As shown in the above , I am running the run.sh script with parameter as 5 to generate 5GB file.
+
+4. From the root of the project go "sort-map-reduce-master" folder, run below commands.
 
 ```bash
 cd mapreduce-sort-example
 ./run.sh 5
 ```
-# NOTE :
-
-run.sh should be followed by a number indicating the amount of data in GBs you want to generate.
-
-As shown in the above , I am running the run.sh script with parameter as 5 to generate 5GB file.
 
 This run.sh does the following steps
 
