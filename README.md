@@ -1,36 +1,69 @@
-# Steps to be followed in order to generate the 10G data file:
-1. Open config.properties file under directory src/main/resources
-
-2. Edit the path for outputdirectory(/Users/poonammhaskar/Desktop) with your local directory path where you want to create    the 10GB data file.
-
-3. Run the DataGenerator.java class under the package org.hadoop.generation
-
-4. It will take around 1.5 - 3.0 minutes to create final output.txt file with 10GB of random data. Depending on the processor this execution time will vary. In my machine it is taking 1.5 minutes.
-
-# sort-map-reduce A MapReduce example which uses ArrayList and Collections.sort()
-1. Once you create 10G file; then create the jar from this project. The main class is already set in the pom.xml just do 
-mvn clean install
-mvn assembly:assembly
-
-2. After that, download hadoop. Here is a nice tutorial I found - 
+# Generate-Sort-Validate
+1. Download hadoop. Here is a nice tutorial I found - 
 https://amodernstory.com/2014/09/23/installing-hadoop-on-mac-osx-yosemite/
 
-3. once you have hadoop run the below commands to create InputFile folder 
-hdfs dfs -mkdir inputFile
-hdfs dfs -put ~/Desktop/output/output.txt inputFile
+2. Once you have made sure hadoop in installed and running. Follow below steps to run the entire project of generate, sort and validate in one go.
 
-4. After this you are ready to run the job. This is the command 
-hadoop jar ~/Downloads/sort-map-reduce-master/mapreduce-sort-example/target/mapreduce-sort-example-0.0.1-SNAPSHOT-jar-with-dependencies.jar /inputFile /outputFile
+# NOTE : 
 
-Note 1 : smallOutputFile shouldn't be a file which is already in the directory. Your job wouldn't run if you'll do so, so just name a file which is not already created. 
+Only caveat to running the below script is to generate,sort and validate on 10GB data, you need to have atleast 80-100GB free space in your laptop. If you donot have that run the below script to generate less amount of data.
 
-Note 2 : If you'll get an error related to META-INF/LICENSE just run this command, probably the write permissions are creating problem then run below command
-zip -d ~/Downloads/sort-map-reduce-master/mapreduce-sort-example/target/mapreduce-sort-example-0.0.1-SNAPSHOT-jar-with-dependencies.jar META-INF/LICENSE
+From the root of the project go "sort-map-reduce-master" folder, run below commands.
 
-Note 3 : If you'll receive any errors related to safemode run this command
-hdfs dfsadmin -safemode leave
+```bash
+cd mapreduce-sort-example
+./run.sh 5
+```
+# NOTE :
 
-5. You'll find the output file here:
-hdfs dfs -cat outputFile/part-r-00000 | less
+run.sh should be followed by a number indicating the amount of data in GBs you want to generate.
 
-# Data validation steps
+As shown in the above , I am running the run.sh script with parameter as 5 to generate 5GB file.
+
+This run.sh does the following steps
+
+1. Build the project using maven
+```bash
+mvn clean install
+mvn assembly : assembly
+```
+
+2. Generate data
+
+```bash
+java -classpath target/generate.jar org.hadoop.generation.DataGenerator $1
+```
+
+3. Clean up previos input,output folders in hadoop
+```bash
+hdfs dfs -rm -r /inputFolder
+hdfs dfs -rm -r /outputFolder
+hdfs dfs -rm -r /validatedFolder
+```
+
+4. Copy generated file in hadoop and remove it from local.
+```bash
+hdfs dfs -mkdir /inputFolder
+rm ./output/outputFile.txt
+```
+
+5. Sort the input file.
+```bash
+hadoop jar target/sort.jar /inputFolder /outputFolder
+```
+
+6. Validate the output of sorted file.
+```bash
+hadoop jar target/validate.jar /outputFolder/part-r-00000 /validatedFolder
+```
+
+7. Check the status of validation output.
+
+If everything goes good. the output of the script will be similar to below one.
+```bash
+Data Validated status : STATUS
+Time taken for generation, sorting and validation : 2591 seconds
+```
+If it results in any error, the output will show it as "FAILED".
+
+8. You can verify the output of validated file in */validatedFolder/part-00000*
