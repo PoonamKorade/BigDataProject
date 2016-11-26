@@ -22,42 +22,43 @@ As shown in the above , I am running the run.sh script with parameter as 5 to ge
 
 This run.sh does the following steps
 
-1. Build the project using maven
+1) Build the project using maven
+
 ```bash
 mvn clean install
 mvn assembly : assembly
 ```
 
-2. Generate data
+2) Generate data
 
 ```bash
 java -classpath target/generate.jar org.hadoop.generation.DataGenerator $1
 ```
 
-3. Clean up previos input,output folders in hadoop
+3) Clean up previos input,output folders in hadoop
 ```bash
 hdfs dfs -rm -r /inputFolder
 hdfs dfs -rm -r /outputFolder
 hdfs dfs -rm -r /validatedFolder
 ```
 
-4. Copy generated file in hadoop and remove it from local.
+4) Copy generated file in hadoop and remove it from local.
 ```bash
 hdfs dfs -mkdir /inputFolder
 rm ./output/outputFile.txt
 ```
 
-5. Sort the input file.
+5) Sort the input file.
 ```bash
 hadoop jar target/sort.jar /inputFolder /outputFolder
 ```
 
-6. Validate the output of sorted file.
+6) Validate the output of sorted file.
 ```bash
 hadoop jar target/validate.jar /outputFolder/part-r-00000 /validatedFolder
 ```
 
-7. Check the status of validation output.
+7) Check the status of validation output.
 
 If everything goes good. the output of the script will be similar to below one.
 ```bash
@@ -66,4 +67,8 @@ Time taken for generation, sorting and validation : 2591 seconds
 ```
 If it results in any error, the output will show it as "FAILED".
 
-8. You can verify the output of validated file in */validatedFolder/part-00000*
+8) You can verify the output of validated fileas follows
+
+```bash
+hdfs dfs -cat /validatedFolder/part-00000 | less
+```
