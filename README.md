@@ -12,13 +12,16 @@ https://amodernstory.com/2014/09/23/installing-hadoop-on-mac-osx-yosemite/
 
 3. As shown below , I am running the run.sh script with parameter as 5 to generate 5GB file.
 
+------------------------------------------------------------------------------------------------------------------------------
 
-From the root of the project go "sort-map-reduce-master" folder, run below commands.
+From the root of the project go "sort-map-reduce-master" folder, run below 2 commands.
 
 ```bash
 cd mapreduce-sort-example
 ./run.sh 5
 ```
+
+#### Explanation of run.sh script (Do not run below steps again)
 
 This run.sh does the following steps
 
