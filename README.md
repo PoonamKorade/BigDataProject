@@ -18,7 +18,7 @@ From the root of the project go "sort-map-reduce-master" folder, run below 2 com
 
 ```bash
 cd mapreduce-sort-example
-./run.sh 5
+sudo -E ./run.sh 5
 ```
 
 #### Explanation of run.sh script (Do not run below steps again)
